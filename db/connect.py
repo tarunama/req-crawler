@@ -3,15 +3,24 @@ import pymysql
 from settings.develop import DB_SETTINGS
 
 
-# DB との接続を確立する
 class ConnectDB:
 
     def __init__(self, settings=DB_SETTINGS):
-        self._connection = self._connect(settings)
+        self._connection = pymysql.connect(**settings)
+        self.cursor = self._connection.cursor()
 
-    def _connect(self, settings):
-        return pymysql.connect(**settings)
+    def close(self):
+        try:
+            if self.cursor:
+                self.cursor.close()
+
+            if self._connection:
+                self._connection.close()
+
+        except:
+            raise Exception
 
 
 if __name__ == '__main__':
-    print(ConnectDB())
+    c = ConnectDB()
+    c.close()
