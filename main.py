@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import certifi
 import lxml
 import urllib3
@@ -46,12 +47,15 @@ class RequirementCrawler(object):
 
 if __name__ == '__main__':
     urls = getattr(base, 'CRAWLED_URLS', [])
-    if urls:
-        conn = ConnectDB()
-        company_list = None
 
-        for url in urls:
-            req_crawler = RequirementCrawler('GET', url)
-            company_list = req_crawler.get_company_list()
+    if not urls:
+        exit()
 
-        conn._insert(company_list)
+    conn = ConnectDB()
+    company_list = None
+
+    for url in urls:
+        req_crawler = RequirementCrawler('GET', url)
+        company_list = req_crawler.get_company_list()
+
+    conn._insert(company_list)

@@ -35,6 +35,7 @@ class ConnectDB:
 
     def _insert(self, company_list:set) -> None:
         dt = datetime.datetime.now()
+        # 言語とメディアを変数にする
         value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
         values = ''
         for i, company in enumerate(company_list):
