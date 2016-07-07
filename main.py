@@ -57,5 +57,6 @@ if __name__ == '__main__':
     for url in urls:
         req_crawler = RequirementCrawler('GET', url)
         company_list = req_crawler.get_company_list()
+        conn._insert(company_list)
 
-    conn._insert(company_list)
+    conn._connection.commit()

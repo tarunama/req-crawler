@@ -10,14 +10,15 @@ class ConnectDB:
 
     def __init__(self, settings=DB_SETTINGS):
         self._connection = pymysql.connect(**settings)
-        self.cursor = self._connection.cursor()
         self._tables = DB_TABLES
+        self.cursor = self._connection.cursor()
         self.cursor.execute('use {0}'.format(DB_SETTINGS.get('db')))
 
     def create_init_table(self):
         table_count = self.cursor.execute('show tables')
+
         if table_count == 0:
-            self.create_init_table()
+            return None
 
         for table in self._tables:
             try:
@@ -50,7 +51,7 @@ class ConnectDB:
         for table in self._tables:
             sql = "INSERT INTO {0} ({1}) VALUES {2}".format(table, cols, values)
             print(sql)
-            self.cursor.execute(sql)
+            print(self.cursor.execute(sql))
 
     def close(self):
         try:
