@@ -3,6 +3,8 @@ import datetime
 
 import pymysql
 
+from req_crawler.utils import log_process_time
+
 from settings.develop import DB_SETTINGS, DB_TABLES, DB_ROWS
 
 
@@ -34,6 +36,7 @@ class ConnectDB:
         table_rows = DB_ROWS.get(table)
         return ','.join([s.split(' ')[0] for s in table_rows if s[:2] != 'id'])
 
+    @log_process_time
     def _insert(self, company_list:set) -> None:
         dt = datetime.datetime.now()
         # 言語とメディアを変数にする

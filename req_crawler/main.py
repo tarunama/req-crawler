@@ -7,6 +7,7 @@ from settings import base
 from bs4 import BeautifulSoup
 
 from db.connect import ConnectDB
+from req_crawler.utils import log_process_time
 
 
 class RequirementCrawler(object):
@@ -25,33 +26,34 @@ class RequirementCrawler(object):
         request = self.http.request(http_method, pagination_url)
         return BeautifulSoup(request.data, 'lxml')
 
+    @log_process_time
     def get_company_list(self) -> set:
-        i = 1
-        company_names = set()
+        page_number = 1
+        company_list = set()
         pagination_url = self.get_pagination_url()
+        request_data = self.request.data.decode('utf-8')
+
         while True:
-            is_exist_company_name = ('company-name' not in str(self.request.data))
-            if is_exist_company_name or 50 < i:
+            if ('company-name' not in request_data) or (50 < page_number):
                 break
 
             for company_name in self.soap.find_all("p", class_="company-name"):
                 _company_name = company_name.string.strip()
                 if len(_company_name) != 0:
-                    company_names.add(_company_name)
+                    company_list.add(_company_name)
 
-            self.soap = self.get_next_soap('GET', pagination_url.format(i))
-            i += 1
-        return company_names
+            self.soap = self.get_next_soap('GET',
+                                           pagination_url.format(page_number))
+            page_number += 1
+        return company_list
 
 
-if __name__ == '__main__':
+def main():
     urls = getattr(base, 'CRAWLED_URLS', [])
-
     if not urls:
         exit()
 
     conn = ConnectDB()
-    company_list = None
 
     for url in urls:
         req_crawler = RequirementCrawler('GET', url)
@@ -59,3 +61,7 @@ if __name__ == '__main__':
         conn._insert(company_list)
 
     conn._connection.commit()
+
+
+if __name__ == '__main__':
+    main()
