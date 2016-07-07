@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import certifi
-import lxml
 import urllib3
 
 from settings import base

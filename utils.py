@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 import time
-from functools import wraps
 
 
 def time_it(func):
