@@ -58,10 +58,10 @@ def main():
     for url in urls:
         req_crawler = RequirementCrawler('GET', url)
         company_list = req_crawler.get_company_list()
-        conn._insert(company_list)
-
-    conn._connection.commit()
-
+        exist_company_list = conn.select()
+        if company_list - exist_company_list:
+            conn.insert(company_list)
 
 if __name__ == '__main__':
     main()
+    print('process finished')

@@ -15,6 +15,7 @@ class ConnectDB:
         self._tables = DB_TABLES
         self.cursor = self._connection.cursor()
         self.cursor.execute('use {0}'.format(DB_SETTINGS.get('db')))
+        self.value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
 
     def create_init_table(self):
         table_count = self.cursor.execute('show tables')
@@ -28,22 +29,33 @@ class ConnectDB:
                 cols_str = ','.join(cols)
                 sql = "CREATE TABLE {0}({1});".format(table, cols_str)
                 self.cursor.execute(sql)
-            except:
+            except Exception as e:
+                print(e)
                 self.close()
 
     def create_cols(self):
         table = DB_TABLES[0]
-        table_rows = DB_ROWS.get(table)
+        table_rows = DB_ROWS[table]
         return ','.join([s.split(' ')[0] for s in table_rows if s[:2] != 'id'])
 
     @log_process_time
-    def _insert(self, company_list:set) -> None:
+    def select(self) -> set:
+        """
+        テーブルから会社名を取得する
+        """
+        for table in self._tables:
+            sql = "SELECT * FROM {0};".format(table)
+            self.cursor.execute(sql)
+
+        return set(c['company_name'] for c in self.cursor.fetchall())
+
+    @log_process_time
+    def insert(self, company_list:set, commit=True) -> None:
         dt = datetime.datetime.now()
         # 言語とメディアを変数にする
-        value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
         values = ''
         for i, company in enumerate(company_list):
-            _value_str = value_str.format(company, str(dt).split('.')[0])
+            _value_str = self.value_str.format(company, str(dt).split('.')[0])
             if i == len(company_list) - 1:
                 values += _value_str + ';'
             else:
@@ -53,8 +65,10 @@ class ConnectDB:
 
         for table in self._tables:
             sql = "INSERT INTO {0} ({1}) VALUES {2}".format(table, cols, values)
-            print(sql)
-            print(self.cursor.execute(sql))
+            self.cursor.execute(sql)
+
+        if commit:
+            self._connection.commit()
 
     def close(self):
         try:
@@ -66,4 +80,5 @@ class ConnectDB:
 
 if __name__ == '__main__':
     c = ConnectDB()
+    c.select()
     c.close()
