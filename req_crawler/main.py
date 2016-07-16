@@ -6,7 +6,7 @@ from settings import base
 
 from bs4 import BeautifulSoup
 
-from db.connect import ConnectDB
+from db import ConnectDB, Query
 from req_crawler.utils import log_process_time
 
 
@@ -19,7 +19,7 @@ class RequirementCrawler(object):
         self.request = self.http.request(self.method, self.url)
         self.soap = BeautifulSoup(self.request.data, 'lxml')
 
-    def get_pagination_url(self):
+    def get_pagination_url(self) -> str:
         return "https://www.wantedly.com/search?page={0}&q=python&t=projects"
 
     def get_next_soap(self, http_method, pagination_url):
@@ -45,6 +45,7 @@ class RequirementCrawler(object):
             self.soap = self.get_next_soap('GET',
                                            pagination_url.format(page_number))
             page_number += 1
+
         return company_list
 
 
@@ -54,14 +55,16 @@ def main():
         exit()
 
     conn = ConnectDB()
+    query = Query(conn._connection)
 
     for url in urls:
         req_crawler = RequirementCrawler('GET', url)
         company_list = req_crawler.get_company_list()
-        exist_company_list = conn.select()
+        exist_company_list = query.select()
         if company_list - exist_company_list:
-            conn.insert(company_list)
+            query.insert(company_list)
 
 if __name__ == '__main__':
+    print('process start')
     main()
     print('process finished')

@@ -1,0 +1,90 @@
+# -*- coding: utf-8 -*-
+import datetime
+
+from req_crawler.utils import log_process_time
+
+from settings.develop import DB_SETTINGS, DB_TABLES, DB_ROWS
+
+
+class Query(object):
+    """
+    Queryを定義しているクラス
+    """
+    def __init__(self, conn):
+        self.conn = conn
+        self.cursor = conn.cursor()
+        self._tables = DB_TABLES
+        self.cursor.execute('use {0}'.format(DB_SETTINGS.get('db')))
+        self.value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
+
+    def create_init_table(self):
+        """
+        テーブルがない場合、作る
+        """
+        table_count = self.cursor.execute('show tables')
+
+        if table_count == 0:
+            return None
+
+        for table in self._tables:
+            try:
+                cols = DB_ROWS.get(table)
+                cols_str = ','.join(cols)
+                sql = "CREATE TABLE {0}({1});".format(table, cols_str)
+                self.cursor.execute(sql)
+            except Exception as e:
+                print(e)
+                self.close()
+
+    def create_cols(self, table_name: str) -> str:
+        """
+        テーブルのカラムを取得する
+        """
+        table_rows = DB_ROWS[table_name]
+        return ','.join([s.split(' ')[0] for s in table_rows if s[:2] != 'id'])
+
+    @log_process_time
+    def select(self) -> set:
+        """
+        テーブルから会社名を取得する
+        """
+        for table in self._tables:
+            sql = "SELECT * FROM {0};".format(table)
+            self.cursor.execute(sql)
+
+        return set(c['company_name'] for c in self.cursor.fetchall())
+
+    @log_process_time
+    def insert(self, company_list: set, commit=False) -> None:
+        """
+        INSERT文を実行する
+        """
+        dt = datetime.datetime.now()
+        # 言語とメディアを変数にする
+        values = ''
+        for i, company in enumerate(company_list):
+            _value_str = self.value_str.format(company, str(dt).split('.')[0])
+            if i == len(company_list) - 1:
+                values += _value_str + ';'
+            else:
+                values += _value_str + ','
+
+        for table in self._tables:
+            cols = self.create_cols(table)
+            sql = "INSERT INTO {0} ({1}) VALUES {2}".format(table, cols, values)
+            print(sql)
+            print(self.cursor.execute(sql))
+
+        if commit:
+            self.conn.commit()
+
+    def close(self):
+        """
+        例外処理が発生した場合、接続を閉じる
+        """
+        try:
+            self.cursor.close()
+            self.conn.close()
+        except Exception as e:
+            print(e)
+            exit()
