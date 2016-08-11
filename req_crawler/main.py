@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import certifi
+import os
 import urllib3
+from importlib import import_module
 
 from settings import base
 
@@ -54,8 +56,11 @@ def main():
     if not urls:
         exit()
 
-    conn = ConnectDB()
-    query = Query(conn._connection)
+    environ = os.environ.get('REQ_CRAWLER_SETTINGS', 'settings.base')
+    settings = import_module(environ)
+
+    connect_db = ConnectDB(settings)
+    query = Query(connect_db, settings)
 
     for url in urls:
         req_crawler = RequirementCrawler('GET', url)

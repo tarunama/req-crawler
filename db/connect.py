@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 import pymysql
 
-from settings.develop import DB_SETTINGS, DB_TABLES
-
 
 class ConnectDB:
-
-    def __init__(self, settings=DB_SETTINGS):
-        self._connection = pymysql.connect(**settings)
-        self._tables = DB_TABLES
-
-if __name__ == '__main__':
-    c = ConnectDB()
-    print(c._connection)
+    """
+    DBとの接続を確立する
+    """
+    def __init__(self, settings):
+        self.connection = pymysql.connect(**getattr(settings, 'DB_SETTINGS'))
+        self.tables = getattr(settings, 'DB_TABLES')

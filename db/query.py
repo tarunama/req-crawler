@@ -3,23 +3,23 @@ import datetime
 
 from req_crawler.utils import log_process_time
 
-from settings.develop import DB_SETTINGS, DB_TABLES, DB_ROWS
-
 
 class Query(object):
     """
     Queryを定義しているクラス
     """
-    def __init__(self, conn):
-        self.conn = conn
-        self.cursor = conn.cursor()
-        self._tables = DB_TABLES
-        self.cursor.execute('use {0}'.format(DB_SETTINGS.get('db')))
-        self.value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
+    def __init__(self, connect_db, settings):
+        self.conn = connect_db.connection
+        self.cursor = connect_db.connection.cursor()
+        self._tables = getattr(settings, 'DB_TABLES')
+        self._db_rows = getattr(settings, 'DB_ROWS')
+        self._db_settings = getattr(settings, 'DB_SETTINGS')
+        self.cursor.execute('use {0}'.format(self._db_settings.get('db')))
+        self._value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
 
     def create_init_table(self):
         """
-        テーブルがない場合、作る
+        テーブルがない場合、作成する
         """
         table_count = self.cursor.execute('show tables')
 
@@ -28,7 +28,7 @@ class Query(object):
 
         for table in self._tables:
             try:
-                cols = DB_ROWS.get(table)
+                cols = self._db_rows.get(table)
                 cols_str = ','.join(cols)
                 sql = "CREATE TABLE {0}({1});".format(table, cols_str)
                 self.cursor.execute(sql)
@@ -40,7 +40,7 @@ class Query(object):
         """
         テーブルのカラムを取得する
         """
-        table_rows = DB_ROWS[table_name]
+        table_rows = self._db_rows[table_name]
         return ','.join([s.split(' ')[0] for s in table_rows if s[:2] != 'id'])
 
     @log_process_time
@@ -57,13 +57,13 @@ class Query(object):
     @log_process_time
     def insert(self, company_list: set, commit=False) -> None:
         """
-        INSERT文を実行する
+        データをテーブルに挿入する
         """
         dt = datetime.datetime.now()
         # 言語とメディアを変数にする
         values = ''
         for i, company in enumerate(company_list):
-            _value_str = self.value_str.format(company, str(dt).split('.')[0])
+            _value_str = self._value_str.format(company, str(dt).split('.')[0])
             if i == len(company_list) - 1:
                 values += _value_str + ';'
             else:
