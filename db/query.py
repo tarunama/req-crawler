@@ -11,9 +11,9 @@ class Query(object):
     def __init__(self, connect_db, settings):
         self.conn = connect_db.connection
         self.cursor = connect_db.connection.cursor()
-        self._tables = getattr(settings, 'DB_TABLES')
-        self._db_rows = getattr(settings, 'DB_ROWS')
-        self._db_settings = getattr(settings, 'DB_SETTINGS')
+        self._tables = settings.DB_TABLES
+        self._db_rows = settings.DB_ROWS
+        self._db_settings = settings.DB_SETTINGS
         self.cursor.execute('use {0}'.format(self._db_settings.get('db')))
         self._value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
 
