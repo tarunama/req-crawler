@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+import os
+from importlib import import_module
+
+
+environ = os.environ.get('REQ_CRAWLER_SETTINGS', 'settings.base')
+settings = import_module(environ)

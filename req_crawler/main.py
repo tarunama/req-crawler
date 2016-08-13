@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import certifi
-import os
 import urllib3
-from importlib import import_module
 
-from settings import base
+from settings import settings
 
 from bs4 import BeautifulSoup
 
@@ -52,12 +50,9 @@ class RequirementCrawler(object):
 
 
 def main():
-    urls = getattr(base, 'CRAWLED_URLS', [])
+    urls = getattr(settings, 'CRAWLED_URLS', [])
     if not urls:
         exit()
-
-    environ = os.environ.get('REQ_CRAWLER_SETTINGS', 'settings.base')
-    settings = import_module(environ)
 
     connect_db = ConnectDB(settings)
     query = Query(connect_db, settings)
