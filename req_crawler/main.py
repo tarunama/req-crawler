@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 import certifi
-import logging
 import urllib3
 
 from bs4 import BeautifulSoup
 
-from req_crawler.db import ConnectDB, Query
-from req_crawler.settings import settings
-from req_crawler.utils import log_process_time
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from db import ConnectDB, Query
+from logger import logger
+from settings import settings
+from utils import log_process_time
 
 
 class RequirementCrawler(object):

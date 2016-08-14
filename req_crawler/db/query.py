@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
-import logging
 
-from req_crawler.utils import log_process_time
-
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from logger import logger
+from utils import log_process_time
 
 
 class Query(object):
