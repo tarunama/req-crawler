@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import certifi
+import logging
 import urllib3
-
-from settings import settings
 
 from bs4 import BeautifulSoup
 
-from db import ConnectDB, Query
+from req_crawler.db import ConnectDB, Query
+from req_crawler.settings import settings
 from req_crawler.utils import log_process_time
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class RequirementCrawler(object):
@@ -65,6 +68,6 @@ def main():
             query.insert(company_list)
 
 if __name__ == '__main__':
-    print('process start')
+    logger.info('process start')
     main()
-    print('process finished')
+    logger.info('process finished')
