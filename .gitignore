@@ -2,3 +2,5 @@
 .idea/*
 paiza/*
 work.py
+*.pyc
+*.log
