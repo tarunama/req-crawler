@@ -1,1 +1,1 @@
-from .logger import logger
+from .logger import logger, process_logger
