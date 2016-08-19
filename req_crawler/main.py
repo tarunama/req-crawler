@@ -22,7 +22,7 @@ class RequirementCrawler(object):
     def get_pagination_url(self) -> str:
         return "https://www.wantedly.com/search?page={0}&q=python&t=projects"
 
-    def get_next_soap(self, http_method, pagination_url):
+    def get_next_soup(self, http_method, pagination_url):
         request = self.http.request(http_method, pagination_url)
         return BeautifulSoup(request.data, 'lxml')
 
@@ -42,7 +42,7 @@ class RequirementCrawler(object):
                 if len(_company_name) != 0:
                     company_list.add(_company_name)
 
-            self.soap = self.get_next_soap('GET',
+            self.soup = self.get_next_soup('GET',
                                            pagination_url.format(page_number))
             page_number += 1
 
