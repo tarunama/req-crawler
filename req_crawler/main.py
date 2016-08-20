@@ -37,7 +37,7 @@ class RequirementCrawler(object):
             if ('company-name' not in request_data) or (50 < page_number):
                 break
 
-            for company_name in self.soap.find_all("p", class_="company-name"):
+            for company_name in self.soup.find_all('p', class_='company-name'):
                 _company_name = company_name.string.strip()
                 if len(_company_name) != 0:
                     company_list.add(_company_name)
@@ -52,6 +52,7 @@ class RequirementCrawler(object):
 def main():
     urls = getattr(settings, 'CRAWLED_URLS', [])
     if not urls:
+        logger.error('URLSを設定してください')
         exit()
 
     connect_db = ConnectDB(settings)
