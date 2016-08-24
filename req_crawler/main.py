@@ -17,34 +17,33 @@ class RequirementCrawler(object):
         self.url = url
         self.http = urllib3.PoolManager(ca_certs=certifi.where())
         self.request = self.http.request(self.method, self.url)
-        self.soap = BeautifulSoup(self.request.data, 'lxml')
+        self.soup = BeautifulSoup(self.request.data, 'lxml')
+        self.page_num = 1
 
-    def get_pagination_url(self) -> str:
-        return "https://www.wantedly.com/search?page={0}&q=python&t=projects"
+    def get_pagination_url(self):
+        self.page_num += 1
+        return ("https://www.wantedly.com/search?page={0}&q=python&t=projects"
+                .format(self.page_num))
 
-    def get_next_soup(self, http_method, pagination_url):
+    def get_next_soup(self, pagination_url, http_method=None):
+        http_method = http_method if http_method else 'GET'
         request = self.http.request(http_method, pagination_url)
-        return BeautifulSoup(request.data, 'lxml')
+        bs = BeautifulSoup(request.data, 'lxml')
+        return bs.find_all('p', class_='company-name')
 
     @log_process_time
     def get_company_list(self) -> set:
-        page_number = 1
         company_list = set()
-        pagination_url = self.get_pagination_url()
-        request_data = self.request.data.decode('utf-8')
+        soup = self.soup.find_all('p', class_='company-name')
 
-        while True:
-            if ('company-name' not in request_data) or (50 < page_number):
-                break
-
-            for company_name in self.soup.find_all('p', class_='company-name'):
+        while soup:
+            for company_name in soup:
                 _company_name = company_name.string.strip()
                 if len(_company_name) != 0:
                     company_list.add(_company_name)
 
-            self.soup = self.get_next_soup('GET',
-                                           pagination_url.format(page_number))
-            page_number += 1
+            pagination_url = self.get_pagination_url()
+            soup = self.get_next_soup(pagination_url)
 
         return company_list
 
@@ -52,7 +51,7 @@ class RequirementCrawler(object):
 def main():
     urls = getattr(settings, 'CRAWLED_URLS', [])
     if not urls:
-        logger.error('URLSを設定してください')
+        logger.error('CRAWLED_URLSを設定してください')
         exit()
 
     connect_db = ConnectDB(settings)
