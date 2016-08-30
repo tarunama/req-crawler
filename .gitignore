@@ -4,3 +4,4 @@ paiza/*
 work.py
 *.pyc
 *.log
+*__pycache__/*
