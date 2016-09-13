@@ -22,9 +22,8 @@ class RequirementCrawler(object):
         return ('https://www.wantedly.com/search?page={0}&q=python&t=projects'
                 .format(self.page_num))
 
-    def get_next_soup(self, pagination_url, http_method=None):
-        http_method = http_method if http_method else 'GET'
-        request = self.http.request(http_method, pagination_url)
+    def get_next_soup(self, pagination_url):
+        request = self.http.request(self.method, pagination_url)
         bs = BeautifulSoup(request.data, 'lxml')
         return bs.find_all('p', class_='company-name')
 
