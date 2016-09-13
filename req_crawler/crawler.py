@@ -17,7 +17,7 @@ class RequirementCrawler(object):
         self.soup = BeautifulSoup(self.request.data, 'lxml')
         self.page_num = 1
 
-    def get_pagination_url(self):
+    def get_pagination_url(self) -> str:
         self.page_num += 1
         return ('https://www.wantedly.com/search?page={0}&q=python&t=projects'
                 .format(self.page_num))
@@ -43,5 +43,3 @@ class RequirementCrawler(object):
             soup = self.get_next_soup(pagination_url)
 
         return company_list
-
-

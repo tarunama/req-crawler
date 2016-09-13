@@ -18,7 +18,7 @@ class Query(object):
         self.cursor.execute('use {0}'.format(self._db_settings.get('db')))
         self.value_str = "('python', '{0}', 'Wantedly', '{1}', '{1}')"
 
-    def create_init_table(self):
+    def create_init_table(self) -> None:
         """
         テーブルがない場合、作成する
         """
@@ -78,7 +78,7 @@ class Query(object):
         if commit:
             self.conn.commit()
 
-    def close(self):
+    def close(self) -> None:
         """
         例外処理が発生した場合、接続を閉じる
         """
