@@ -6,6 +6,15 @@ CRAWLED_URLS = [
     'https://www.wantedly.com/search?q=python'
 ]
 
+CRAWLED_SITE_INFO = {
+    'www.wantedly.com': {
+        'pagination_url':
+            'https://www.wantedly.com/search?page={0}&q=python&t=projects',
+        'crawl_tag': 'p',
+        'crawl_class': 'company-name'
+    }
+}
+
 DB_SETTINGS = {
     'host': 'localhost',
     'user': 'req',
