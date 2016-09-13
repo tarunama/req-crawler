@@ -19,7 +19,7 @@ class RequirementCrawler(object):
 
     def get_pagination_url(self):
         self.page_num += 1
-        return ("https://www.wantedly.com/search?page={0}&q=python&t=projects"
+        return ('https://www.wantedly.com/search?page={0}&q=python&t=projects'
                 .format(self.page_num))
 
     def get_next_soup(self, pagination_url, http_method=None):
