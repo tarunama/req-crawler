@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
 import logging
+from subprocess import call
+
+
+def create_file_handler():
+    try:
+        handler = logging.FileHandler(filename='../log/req_crawler.log')
+    except FileNotFoundError:
+        call('touch ../log/req_crawler.log')
+        handler = logging.FileHandler(filename='../log/req_crawler.log')
+    return handler
 
 
 def create_logger():
     logger = logging.getLogger('req_crawler')
     logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(filename='../log/req_crawler.log')
+    handler = create_file_handler()
     formatter = \
         logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
