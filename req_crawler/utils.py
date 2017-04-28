@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from logger import process_logger
+from req_crawler.logger import process_logger
 
 
 def log_process_time(func):
