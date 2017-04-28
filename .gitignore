@@ -1,0 +1,5 @@
+log/req_crawler.log
+log/task.log
+req_crawler/logger/__pycache__/logger.cpython-34.pyc
+req_crawler/logger/__pycache__/__init__.cpython-34.pyc
+req_crawler/__pycache__/__init__.cpython-34.pyc
