@@ -3,42 +3,34 @@ import logging
 from subprocess import call
 
 
-def create_file_handler(log_type):
-    log_name = ('req_crawler.log' if log_type == 'main' else
-                'task.log')
-    file_name = '../log/{}'.format(log_name)
+class Logger(object):
 
-    try:
-        handler = logging.FileHandler(filename=file_name)
-    except FileNotFoundError:
-        touch_command = 'touch {}'.format(file_name)
-        call(touch_command)
-        handler = logging.FileHandler(filename=file_name)
+    def __init__(self, log_type):
+        self.log_type  = log_type
+        self.name      = ('req_crawler.log' if log_type == 'main' else
+                          'task.log')
+        self.file_name = '../log/{}'.format(self.name)
 
-    return handler
+    def create(self):
+        name   = 'req_crawler:{}'.format(self.log_type)
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.INFO)
+        handler = self.create_file_handler()
+        formatter = \
+            logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        return logger
 
-
-def create_logger():
-    logger = logging.getLogger('req_crawler')
-    logger.setLevel(logging.INFO)
-    handler = create_file_handler('main')
-    formatter = \
-        logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
-
-logger = create_logger()
-
-
-def create_process_logger():
-    task_logger = logging.getLogger('req_crawler:process')
-    task_logger.setLevel(logging.INFO)
-    handler = create_file_handler('task')
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
-    handler.setFormatter(formatter)
-    task_logger.addHandler(handler)
-    return task_logger
+    def create_file_handler(self):
+        try:
+            handler = logging.FileHandler(filename=self.file_name)
+        except FileNotFoundError:
+            touch_command = 'touch {}'.format(self.file_name)
+            call(touch_command)
+            handler = logging.FileHandler(filename=self.file_name)
+        return handler
 
 
-process_logger = create_process_logger()
+logger = Logger('main')
+process_logger = Logger('task')
