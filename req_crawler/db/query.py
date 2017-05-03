@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from logger import logger
-from utils import log_process_time
+from req_crawler.logger import logger
+from req_crawler.utils import log_process_time
 
 
 class Query(object):
