@@ -6,13 +6,13 @@ from subprocess import call
 class Logger(object):
 
     def __init__(self, log_type):
-        self.log_type  = log_type
-        self.name      = ('req_crawler.log' if log_type == 'main' else
-                          'task.log')
-        self.file_name = '../log/{}'.format(self.name)
+        self.__log_type  = log_type
+        self.__name      = ('req_crawler.log' if log_type == 'main' else
+                            'task.log')
+        self.__file_name = '../log/{}'.format(self.__name)
 
     def create(self):
-        name   = 'req_crawler:{}'.format(self.log_type)
+        name   = 'req_crawler:{}'.format(self.__log_type)
         logger = logging.getLogger(name)
         logger.setLevel(logging.INFO)
         handler = self.create_file_handler()
@@ -24,11 +24,11 @@ class Logger(object):
 
     def create_file_handler(self):
         try:
-            handler = logging.FileHandler(filename=self.file_name)
+            handler = logging.FileHandler(filename=self.__file_name)
         except FileNotFoundError:
-            touch_command = 'touch {}'.format(self.file_name)
+            touch_command = 'touch {}'.format(self.__file_name)
             call(touch_command)
-            handler = logging.FileHandler(filename=self.file_name)
+            handler = logging.FileHandler(filename=self.__file_name)
         return handler
 
 
