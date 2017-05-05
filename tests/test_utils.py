@@ -17,7 +17,3 @@ class UtilsTest(unittest.TestCase):
             sleep(1)
 
         # self.assertTrue(mock_logging.info.called)
-
-
-if __name__ == '__main__':
-    unittest.main()
