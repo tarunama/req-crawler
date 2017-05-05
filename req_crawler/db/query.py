@@ -22,9 +22,9 @@ class Query(object):
         """
         テーブルがない場合、作成する
         """
-        table_count = self.cursor.execute('show tables')
+        is_exist_table = self.cursor.execute('show tables')
 
-        if table_count == 0:
+        if is_exist_table:
             return None
 
         for table in self._tables:
