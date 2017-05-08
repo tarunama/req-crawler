@@ -32,5 +32,5 @@ class Logger(object):
         return handler
 
 
-logger = Logger('main')
-process_logger = Logger('task')
+logger = Logger('main').create()
+process_logger = Logger('task').create()
