@@ -2,6 +2,8 @@
 import logging
 from subprocess import call
 
+from req_crawler.settings.base import APP_ROOT_PATH
+
 
 class Logger(object):
 
@@ -9,7 +11,10 @@ class Logger(object):
         self.__log_type  = log_type
         self.__name      = ('req_crawler.log' if log_type == 'main' else
                             'task.log')
-        self.__file_name = '../log/{}'.format(self.__name)
+        self.__file_name = '{app_root_path}/log/{file_name}'.format(
+            app_root_path=APP_ROOT_PATH,
+            file_name=self.__name
+        )
 
     def create(self):
         name   = 'req_crawler:{}'.format(self.__log_type)
