@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from settings.base import *
+from req_crawler.settings.base import *

@@ -1,2 +1,2 @@
-from .connect import ConnectDB
-from .query import Query
+from req_crawler.db.connect import ConnectDB
+from req_crawler.db.query import Query

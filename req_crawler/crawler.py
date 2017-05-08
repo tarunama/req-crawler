@@ -5,8 +5,8 @@ from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
-from settings import settings
-from utils import log_process_time
+from req_crawler.settings import settings
+from req_crawler.utils import log_process_time
 
 
 class RequirementCrawler(object):
