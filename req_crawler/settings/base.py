@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
+
+from os.path import abspath, dirname
+
 import pymysql
 
+
+APP_ROOT_PATH = dirname( dirname( dirname( abspath(__file__) ) ) )
 
 CRAWLED_URLS = [
     'https://www.wantedly.com/search?q=python'
