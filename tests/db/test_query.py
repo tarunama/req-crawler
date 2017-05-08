@@ -28,9 +28,16 @@ class QueryTest(unittest.TestCase):
 
     def test_create_init_table(self):
         self.query.create_init_table()
-        table_count = self.query.cursor.execute('SHOW TABLES')
+        table_count_first_time = self.query.cursor.execute('SHOW TABLES')
 
-        self.assertTrue(0 < table_count)
+        self.assertTrue(0 < table_count_first_time)
+
+        # Can not create table when created table already
+        self.query.create_init_table()
+        table_count_second_time = self.query.cursor.execute('SHOW TABLES')
+
+        self.assertTrue(table_count_first_time == table_count_second_time)
+
 
     def tearDown(self):
         # Rollback all executions
