@@ -38,6 +38,21 @@ class QueryTest(unittest.TestCase):
 
         self.assertTrue(table_count_first_time == table_count_second_time)
 
+    def test_create_cols(self):
+        # Create table for test
+        self.query.create_init_table()
+
+        for table_name in settings.DB_TABLES:
+            sql = 'DESCRIBE {}'.format(table_name)
+            self.query.cursor.execute(sql)
+
+            # String for create INSERT query
+            table_cols = [row_info['Field'] for row_info
+                          in self.query.cursor.fetchall()
+                          if row_info['Field'] != 'id']
+
+            table_cols_str = ','.join(table_cols)
+            self.assertTrue(self.query.create_cols(table_name) == table_cols_str)
 
     def tearDown(self):
         # Rollback all executions
