@@ -7,7 +7,7 @@ from req_crawler.utils import log_process_time
 
 class Query(object):
     """
-    Queryを定義しているクラス
+    Query for DB actions
     """
     def __init__(self, connect_db, settings):
         self.conn = connect_db.connection
@@ -20,7 +20,7 @@ class Query(object):
 
     def create_init_table(self) -> None:
         """
-        テーブルがない場合、作成する
+        If there are not tables, create table
         """
         is_exist_table = self.cursor.execute('show tables')
 
@@ -39,7 +39,7 @@ class Query(object):
 
     def create_cols(self, table_name: str) -> str:
         """
-        テーブルのカラムを取得する
+        Create string for INSERT query
         """
         table_rows = self._db_rows[table_name]
         return ','.join([s.split(' ')[0] for s in table_rows if s[:2] != 'id'])
@@ -47,7 +47,7 @@ class Query(object):
     @log_process_time
     def select(self) -> set:
         """
-        テーブルから会社名を取得する
+        Get company names from tables for checking diff
         """
         for table in self._tables:
             sql = "SELECT * FROM {0};".format(table)
@@ -58,7 +58,7 @@ class Query(object):
     @log_process_time
     def insert(self, company_list: set, commit=False) -> None:
         """
-        データをテーブルに挿入する
+        Execute INSERT query
         """
         dt = datetime.datetime.now()
         values = ''
@@ -80,7 +80,7 @@ class Query(object):
 
     def close(self) -> None:
         """
-        例外処理が発生した場合、接続を閉じる
+        Close connection, when it happens exception
         """
         try:
             self.cursor.close()

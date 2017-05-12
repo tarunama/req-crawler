@@ -9,7 +9,7 @@ class DBConnectTest(unittest.TestCase):
 
     def test_connect(self):
         """
-        DBに接続できるかテスト
+        Test establish connection
         """
         connection = ConnectDB(settings)
         self.assertTrue(connection)
