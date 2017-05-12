@@ -10,6 +10,7 @@ from req_crawler.settings import settings
 class QueryTest(unittest.TestCase):
 
     def setUp(self):
+        self.company_list = {'foo', 'bar', 'baz'}
         # Establish DB connection
         self.connect_db = ConnectDB(settings)
         self.query = Query(self.connect_db, settings)
@@ -53,6 +54,15 @@ class QueryTest(unittest.TestCase):
 
             table_cols_str = ','.join(table_cols)
             self.assertTrue(self.query.create_cols(table_name) == table_cols_str)
+
+    def test_insert(self):
+        # Create table for test
+        self.query.create_init_table()
+        self.query.insert(self.company_list, commit=True)
+        table     = 'requirement'
+        row_count = self.query.cursor.execute('SELECT *'
+                                              'FROM {}'.format(table))
+        self.assertTrue(row_count == 3)
 
     def tearDown(self):
         # Rollback all executions
