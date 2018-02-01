@@ -21,6 +21,7 @@ def main():
         if company_list - exist_company_list:
             query.insert(company_list)
 
+
 if __name__ == '__main__':
     logger.info('process start')
     main()
