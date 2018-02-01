@@ -11,8 +11,9 @@ from req_crawler.utils import log_process_time
 
 class RequirementCrawler(object):
 
-    def __init__(self, method=None, url=None):
-        self.method = method or 'GET'
+    #HACK: reduce attribute
+    def __init__(self, method='GET', url=None):
+        self.method = method
         self.url = url
         self.http = urllib3.PoolManager(ca_certs=certifi.where())
         self.request = self.http.request(self.method, self.url)
@@ -52,6 +53,6 @@ class RequirementCrawler(object):
                     company_list.add(_company_name)
 
             pagination_url = self.get_pagination_url()
-            soup = self.get_next_soup(pagination_url)
+            soup           = self.get_next_soup(pagination_url)
 
         return company_list
