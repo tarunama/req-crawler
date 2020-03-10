@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    container_name: app
+    volumes:
+      - ./req_crawler:/app
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: req
+      MYSQL_USER: req
+      MYSQL_ROOT_PASSWORD: req
