@@ -1,16 +1,16 @@
-FROM python:3.7-alpine
+FROM python:3.8-alpine
 
-RUN apk add --update --no-cache --virtual .build-deps \
-        g++ \
-        python-dev \
-        libxml2 \
-        libxml2-dev && \
-    apk add libxslt-dev && \
-    apk del .build-deps
+WORKDIR /app
 
-COPY . /app
+COPY . .
 
-RUN pip install -r /app/requirements.txt
+RUN apk add --no-cache --virtual .build-deps \
+    gcc musl-dev \
+    libxslt-dev libxml2-dev &&\
+    pip install lxml && \
+    apk del .build-deps && \
+    apk add --no-cache libxslt libxml2 && \
+    pip install -r requirements.txt
 
 EXPOSE 80
 
