@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from req_crawler.db import ConnectDB, Query
-from req_crawler.logger import logger
-from req_crawler.settings import settings
-from req_crawler.crawler import RequirementCrawler
+from db import ConnectDB, Query
+from logger import logger
+from settings import settings
+from crawler import RequirementCrawler
 
 
 def main():
